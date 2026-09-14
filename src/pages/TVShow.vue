@@ -114,6 +114,7 @@ import { addViewedItem } from '../composables/useHistory';
 import { getLastWatchedMetaData } from '../composables/useStream';
 import useAxios from '../composables/useAxios';
 import { primeGenres } from '../composables/useGenreLookup';
+import { BRAND } from '../config/brand';
 
 interface ReviewsResponse {
     results: Array<{
@@ -317,7 +318,7 @@ export default defineComponent({
                 trailers.value = videos ?? [];
 
                 if (show.value) {
-                    document.title = `${show.value.name} — Movieace`;
+                    document.title = `${show.value.name} — ${BRAND.value}`;
                     addViewedItem({
                         id: show.value.id,
                         title: show.value.name,

@@ -147,6 +147,7 @@ import { useMovies } from '../composables/useMovies';
 import { Movie } from '../composables/useHighlights';
 import { addSearchTerm } from '../composables/useHistory';
 import { primeGenres, getGenres, Genre } from '../composables/useGenreLookup';
+import { BRAND } from '../config/brand';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_BOUNDS: [number, number] = [1950, CURRENT_YEAR + 2];
@@ -390,7 +391,7 @@ export default defineComponent({
         });
 
         onMounted(async () => {
-            document.title = 'Discover Movies — Movieace';
+            document.title = `Discover Movies — ${BRAND.value}`;
             primeGenres();
             hydrateFromRoute();
 

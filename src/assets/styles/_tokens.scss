@@ -23,10 +23,11 @@
   --bone-500: #6b6454;
 
   // ── Color: accent ────────────────────────────────────────────────────────
-  --ember: #ff5a1f;     // cinema-marquee spot accent
-  --ember-600: #e84817;
-  --ember-700: #b93c12;
-  --ember-glow: rgba(255, 90, 31, 0.35);
+  --ember: #ff5902;     // overridden at runtime by VITE_PRIMARY_COLOR
+  --ember-rgb: 255, 89, 2;
+  --ember-600: #d64b02;
+  --ember-700: #ad3c01;
+  --ember-glow: rgba(var(--ember-rgb), 0.35);
 
   --gold-leaf: #c9a76a; // rating / awards only
   --gold-leaf-soft: rgba(201, 167, 106, 0.18);
@@ -43,7 +44,7 @@
   --danger: #c94e3d;
 
   // Ambient bloom — overridden per-page via useAmbientColor
-  --ambient: 255, 90, 31;
+  --ambient: var(--ember-rgb);
 
   // ── Typography ───────────────────────────────────────────────────────────
   --font-display: 'Fraunces', 'Times New Roman', Georgia, serif;

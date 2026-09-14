@@ -134,6 +134,7 @@ import SiteFooter from '../components/navigation/SiteFooter.vue';
 import PersonCard from '../components/cards/PersonCard.vue';
 import { useActor, Actor } from '../composables/useActor';
 import { addSearchTerm } from '../composables/useHistory';
+import { BRAND } from '../config/brand';
 
 type SortMode = 'popular' | 'trending';
 
@@ -232,7 +233,7 @@ export default defineComponent({
         });
 
         onMounted(() => {
-            document.title = 'People — Movieace';
+            document.title = `People — ${BRAND.value}`;
             fetchPage(1, false);
         });
 

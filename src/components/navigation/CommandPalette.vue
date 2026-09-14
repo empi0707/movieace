@@ -319,7 +319,7 @@ export default defineComponent({
         background: var(--ink-800);
         border: 1px solid var(--rule-strong);
         border-radius: var(--r-lg);
-        box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 90, 31, 0.05);
+        box-shadow: var(--shadow-lg), 0 0 0 1px rgba(var(--ember-rgb), 0.05);
         display: flex;
         flex-direction: column;
         max-height: 72vh;
@@ -432,7 +432,7 @@ export default defineComponent({
 
         .is-active & {
             color: var(--ember);
-            background: rgba(255, 90, 31, 0.12);
+            background: rgba(var(--ember-rgb), 0.12);
         }
     }
 
