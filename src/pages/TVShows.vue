@@ -147,6 +147,7 @@ import { useTvShows, TVShowType } from '../composables/useTvShows';
 import useAxios from '../composables/useAxios';
 import { addSearchTerm } from '../composables/useHistory';
 import { primeGenres, getGenres, Genre } from '../composables/useGenreLookup';
+import { BRAND } from '../config/brand';
 
 interface TvShowResponse {
     page: number;
@@ -414,7 +415,7 @@ export default defineComponent({
         });
 
         onMounted(async () => {
-            document.title = 'Discover TV Shows — Movieace';
+            document.title = `Discover TV Shows — ${BRAND.value}`;
             primeGenres();
             hydrateFromRoute();
 

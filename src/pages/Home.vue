@@ -44,7 +44,7 @@
                 :release-date="spotlight.release_date"
                 eyebrow="The Feature"
                 :pull-quote="spotlightQuote"
-                attribution="Movieace Review"
+                :attribution="`${brand} Review`"
             />
 
             <CuratedRail
@@ -108,6 +108,7 @@ import { useHighlights, highLightOptions } from '../composables/useHighlights';
 import { useTvShows, newShows } from '../composables/useTvShows';
 import type { TVShowType } from '../composables/useTvShows';
 import { primeGenres } from '../composables/useGenreLookup';
+import { BRAND } from '../config/brand';
 
 interface UpcomingTvResponse {
     results: TVShowType[];
@@ -223,7 +224,7 @@ export default defineComponent({
         };
 
         onMounted(async () => {
-            document.title = 'Movieace — A Cinema Periodical';
+            document.title = `${BRAND.value} — A Cinema Periodical`;
             primeGenres();
             await Promise.all([
                 fetchAllHighlights(),
@@ -233,6 +234,7 @@ export default defineComponent({
         });
 
         return {
+            brand: BRAND,
             hero,
             spotlight,
             heroTagline,

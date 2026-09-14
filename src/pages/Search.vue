@@ -193,6 +193,7 @@ import {
     reqMetaData
 } from '../composables/useSearch';
 import { addSearchTerm, searchHistory } from '../composables/useHistory';
+import { BRAND } from '../config/brand';
 
 type TabKey = 'movies' | 'shows' | 'people';
 
@@ -341,7 +342,7 @@ export default defineComponent({
         );
 
         onMounted(() => {
-            document.title = 'Search — Movieace';
+            document.title = `Search — ${BRAND.value}`;
             window.scrollTo(0, 0);
             if (searchTerm.value.trim()) {
                 performSearch(searchTerm.value);

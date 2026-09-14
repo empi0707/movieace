@@ -299,6 +299,7 @@ import { useActor, ActorDetails, ActorImages } from '../composables/useActor';
 import { useWebImage } from '../utils/useWebImage';
 import { useToast } from '../composables/useToast';
 import { useAmbientColor } from '../composables/useAmbientColor';
+import { BRAND } from '../config/brand';
 
 interface CreditItem {
     id: number;
@@ -378,8 +379,8 @@ export default defineComponent({
                 credits.value = cast.filter(c => c.media_type === 'movie' || c.media_type === 'tv');
 
                 document.title = actorDetails.value
-                    ? `${actorDetails.value.name} — Movieace`
-                    : 'People — Movieace';
+                    ? `${actorDetails.value.name} — ${BRAND.value}`
+                    : `People — ${BRAND.value}`;
             } catch (e: any) {
                 hasError.value = true;
                 errorMessage.value = e?.message || 'Could not load this person.';

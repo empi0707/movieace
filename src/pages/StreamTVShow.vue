@@ -105,7 +105,7 @@
             </section>
 
             <p class="watch-stage__disclaimer meta">
-                Streams are mirrored from third-party providers. Movieace does not host video files.
+                Streams are mirrored from third-party providers. {{ brand }} does not host video files.
             </p>
         </main>
 
@@ -142,6 +142,7 @@ import {
 } from '../composables/useStream';
 import { getResumeTimestamp } from '../composables/useProgress';
 import { useWebImage } from '../utils/useWebImage';
+import { BRAND } from '../config/brand';
 
 import StreamFrame from '../components/player/StreamFrame.vue';
 import ServerAccordion from '../components/player/ServerAccordion.vue';
@@ -444,6 +445,7 @@ export default defineComponent({
         });
 
         return {
+            brand: BRAND,
             showId,
             externalId,
             show,
