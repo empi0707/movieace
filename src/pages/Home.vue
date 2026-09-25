@@ -3,6 +3,8 @@
         <SiteHeader />
 
         <main id="main" class="home__main" role="main">
+            <ErrorState v-if="allFailed" title="The front page didn’t load." @retry="loadHome" />
+
             <BillboardHero
                 v-if="hero"
                 :id="hero.id"
@@ -103,6 +105,7 @@ import ContinueShelf from '../components/rails/ContinueShelf.vue';
 import TopTenRail from '../components/rails/TopTenRail.vue';
 import CuratedRail from '../components/rails/CuratedRail.vue';
 import UpcomingRail from '../components/rails/UpcomingRail.vue';
+import ErrorState from '../components/feedback/ErrorState.vue';
 import useAxios from '../composables/useAxios';
 import { useHighlights, highLightOptions } from '../composables/useHighlights';
 import { useTvShows, newShows } from '../composables/useTvShows';
@@ -124,7 +127,8 @@ export default defineComponent({
         ContinueShelf,
         TopTenRail,
         CuratedRail,
-        UpcomingRail
+        UpcomingRail,
+        ErrorState
     },
     setup() {
         const { fetchAllHighlights } = useHighlights();
@@ -223,14 +227,29 @@ export default defineComponent({
             }
         };
 
-        onMounted(async () => {
-            document.title = `${BRAND.value} — Watch Latest Movies TV Shows Online Free`;
-            primeGenres();
+        const loaded = ref(false);
+        const loadHome = async () => {
+            loaded.value = false;
             await Promise.all([
                 fetchAllHighlights(),
                 fetchNewShows(),
                 fetchUpcomingTv()
             ]);
+            loaded.value = true;
+        };
+
+        const allFailed = computed(() =>
+            loaded.value &&
+            !hero.value &&
+            !topTenItems.value.length &&
+            !seriesItems.value.length &&
+            !upcomingItems.value.length
+        );
+
+        onMounted(() => {
+            document.title = `${BRAND.value} — Watch Latest Movies TV Shows Online Free`;
+            primeGenres();
+            loadHome();
         });
 
         return {
@@ -243,7 +262,9 @@ export default defineComponent({
             nowPlayingItems,
             pantheonItems,
             seriesItems,
-            upcomingItems
+            upcomingItems,
+            allFailed,
+            loadHome
         };
     }
 });

@@ -56,9 +56,8 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import LmRail from './Rail.vue';
-import { viewHistory } from '../../composables/useHistory';
-import { streamData } from '../../composables/useStream';
-import { getProgressPercent } from '../../composables/useProgress';
+import { viewHistory, type ViewedItem } from '../../composables/useHistory';
+import { listProgress, type TitleProgress } from '../../composables/useProgress';
 import { useWebImage } from '../../utils/useWebImage';
 
 interface Entry {
@@ -83,47 +82,57 @@ export default defineComponent({
     },
     setup() {
         const entries = computed<Entry[]>(() => {
-            return viewHistory.value.map(item => {
-                const id = String(item.id);
-                const state = streamData.value.movieServerMap[id];
-                const image = item.image ? useWebImage(item.image, 'medium') : '';
-                const initial = (item.title?.[0] || '·').toUpperCase();
+            const titles = new Map(viewHistory.value.map(item => [`${item.type}:${item.id}`, item]));
+            const latest = new Map<string, { progress: TitleProgress; item: ViewedItem }>();
 
-                const isTv = item.type === 'tv';
-                const season = state?.season && state.season > 0 ? state.season : 1;
-                const episode = state?.episode && state.episode > 0 ? state.episode : 1;
+            for (const progress of listProgress()) {
+                const key = `${progress.type}:${progress.mediaId}`;
+                const item = titles.get(key);
+                const started = progress.completed || progress.watched >= progress.duration * 0.01;
+                const current = latest.get(key);
+                if (item && started && (!current || progress.lastUpdated > current.progress.lastUpdated)) {
+                    latest.set(key, { progress, item });
+                }
+            }
 
-                const progress = getProgressPercent(
-                    item.id,
-                    item.type,
-                    isTv ? season : undefined,
-                    isTv ? episode : undefined
-                );
-                const resumePath = isTv
-                    ? `/stream/tv-show/${item.id}/season/${season}/episode/${episode}`
-                    : `/stream/movie/${item.id}`;
+            return [...latest.values()]
+                .filter(({ progress }) => !(progress.completed && progress.type === 'movie'))
+                .sort((a, b) => b.progress.lastUpdated - a.progress.lastUpdated)
+                .map(({ progress, item }) => {
+                    const image = item.image ? useWebImage(item.image, 'medium') : '';
+                    const initial = (item.title?.[0] || '·').toUpperCase();
 
-                const subtitle = isTv
-                    ? `S${season} · E${episode}`
-                    : item.rating
-                        ? `★ ${item.rating.toFixed(1)}`
-                        : '';
+                    const isTv = item.type === 'tv';
+                    const upNext = isTv && !!progress.completed;
+                    const season = progress.season || 1;
+                    const episode = upNext ? (progress.episode || 1) + 1 : progress.episode || 1;
+                    const percent = upNext ? 0 : Math.round((progress.watched / progress.duration) * 100);
 
-                return {
-                    id: item.id,
-                    type: item.type,
-                    title: item.title,
-                    image,
-                    initial,
-                    eyebrow: isTv ? 'Series' : 'Film',
-                    subtitle,
-                    resumePath,
-                    progress,
-                    ariaLabel: isTv
-                        ? `Resume ${item.title} Season ${season} Episode ${episode}`
-                        : `Resume ${item.title}`
-                } satisfies Entry;
-            });
+                    const resumePath = isTv
+                        ? `/stream/tv-show/${item.id}/season/${season}/episode/${episode}`
+                        : `/stream/movie/${item.id}`;
+
+                    const subtitle = isTv
+                        ? `S${season} · E${episode}`
+                        : item.rating
+                            ? `★ ${item.rating.toFixed(1)}`
+                            : '';
+
+                    return {
+                        id: item.id,
+                        type: item.type,
+                        title: item.title,
+                        image,
+                        initial,
+                        eyebrow: upNext ? 'Up next' : isTv ? 'Series' : 'Film',
+                        subtitle,
+                        resumePath,
+                        progress: percent,
+                        ariaLabel: isTv
+                            ? `${upNext ? 'Play' : 'Resume'} ${item.title} Season ${season} Episode ${episode}`
+                            : `Resume ${item.title}`
+                    } satisfies Entry;
+                });
         });
 
         return { entries };

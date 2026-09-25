@@ -26,36 +26,36 @@ export const streamData = useStorage<StreamData>('streamData', defaultStreamData
 
 export const movieServers = ref<Server[]>([
   { name: 'VidSrcMe', urlTemplate: 'https://vidsrcme.su/embed/movie/{tmdbId}' },
-  { name: 'VidKing', urlTemplate: 'https://www.vidking.net/embed/movie/{tmdbId}?autoPlay=true' },
-  { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/movie/{tmdbId}?color=%23{primaryColor}' },
+  { name: 'Vidy', urlTemplate: 'https://www.vidy.st/movie/{tmdbId}?color=ff5a1f&autoplay=true' },
+  { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/movie/{tmdbId}?color=#4eb5ff' },
   { name: 'Cinemaos', urlTemplate: 'https://cinemaos.tech/player/{tmdbId}' },
   { name: 'VidSrc RU', urlTemplate: 'https://vidsrc-embed.ru/embed/movie/{tmdbId}' },
   { name: 'VidSrc SU', urlTemplate: 'https://vidsrc-embed.su/embed/movie/{tmdbId}' },
   { name: 'MultiEmbed', urlTemplate: 'https://multiembed.mov/?video_id={tmdbId}&tmdb=1' },
-  { name: 'Vsrc', urlTemplate: 'https://vsrc.su/embed/movie/{tmdbId}' },
+  { name: 'Rive', urlTemplate: 'https://www.rivestream.app/embed?type=movie&id={tmdbId}' },
   { name: 'VidLink', urlTemplate: 'https://vidlink.pro/movie/{tmdbId}' },
-  { name: 'AutoEmbed', urlTemplate: 'https://player.autoembed.app/embed/movie/{tmdbId}' },
+  { name: 'Vidrift', urlTemplate: 'https://embed.vidrift.net/embed/movie/{tmdbId}' },
   { name: 'VidFast', urlTemplate: 'https://vidfast.pro/movie/{tmdbId}' },
-  { name: '111Movies', urlTemplate: 'https://111movies.com/movie/{tmdbId}' },
-  { name: 'Vidora', urlTemplate: 'https://vidora.su/movie/{tmdbId}?parameters' },
-  { name: 'Smashy', urlTemplate: 'https://player.smashystream.com/movie/{tmdbId}?autoplay=true' }
+  { name: '111Movies', urlTemplate: 'https://player.vidlove.cc/embed/movie/{tmdbId}' },
+  { name: 'CineSrc', urlTemplate: 'https://cinesrc.st/embed/movie/{tmdbId}?color=%23ff5a1f' },
+  { name: 'Vidcore', urlTemplate: 'https://vidcore.io/movie/{tmdbId}?autoPlay=true&theme=ff5a1f' }
 ]);
 
 export const tvServers = ref<Server[]>([
   { name: 'VidSrcMe', urlTemplate: 'https://vidsrcme.su/embed/tv/{externalId}/{season}/{episode}' },
-  { name: 'VidKing', urlTemplate: 'https://www.vidking.net/embed/tv/{externalId}/{season}/{episode}?autoPlay=true&nextEpisode=true&episodeSelector=true' },
-  { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/tv/{externalId}/{season}/{episode}?color=%23{primaryColor}&nextEpisode=true&autoplayNextEpisode=true&episodeSelector=true' },
+  { name: 'Vidy', urlTemplate: 'https://www.vidy.st/tv/{externalId}/{season}/{episode}?color=ff5a1f&autoplay=true&nextEpisode=true&episodeSelector=true&autoplayNextEpisode=true' },
+  { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/tv/{externalId}/{season}/{episode}?color=#4eb5ff&nextEpisode=true&autoplayNextEpisode=true&episodeSelector=true' },
   { name: 'Cinemaos', urlTemplate: 'https://cinemaos.tech/player/{externalId}/{season}/{episode}' },
   { name: 'VidSrc RU', urlTemplate: 'https://vidsrc-embed.ru/embed/tv/{externalId}/{season}/{episode}' },
   { name: 'VidSrc SU', urlTemplate: 'https://vidsrc-embed.su/embed/tv/{externalId}/{season}/{episode}' },
   { name: 'MultiEmbed', urlTemplate: 'https://multiembed.mov/?video_id={externalId}&tmdb=1&s={season}&e={episode}' },
-  { name: 'Vsrc', urlTemplate: 'https://vsrc.su/embed/tv/{externalId}/{season}/{episode}' },
+  { name: 'Rive', urlTemplate: 'https://www.rivestream.app/embed?type=tv&id={externalId}&season={season}&episode={episode}' },
   { name: 'Vidlink', urlTemplate: 'https://vidlink.pro/tv/{externalId}/{season}/{episode}' },
-  { name: 'AutoEmbed', urlTemplate: 'https://player.autoembed.app/embed/tv/{externalId}/{season}/{episode}' },
+  { name: 'Vidrift', urlTemplate: 'https://embed.vidrift.net/embed/tv/{externalId}/{season}/{episode}' },
   { name: 'VidFast', urlTemplate: 'https://vidfast.pro/tv/{externalId}/{season}/{episode}' },
-  { name: '111Movies', urlTemplate: 'https://111movies.com/tv/{externalId}/{season}/{episode}' },
-  { name: 'Vidora', urlTemplate: 'https://vidora.su/tv/{externalId}/{season}/{episode}?autoplay=true' },
-  { name: 'Smashy', urlTemplate: 'https://player.smashystream.com/tv/{externalId}?s={season}&e={episode}' }
+  { name: '111Movies', urlTemplate: 'https://player.vidlove.cc/embed/tv/{externalId}/{season}/{episode}' },
+  { name: 'CineSrc', urlTemplate: 'https://cinesrc.st/embed/tv/{externalId}?s={season}&e={episode}&color=%23ff5a1f' },
+  { name: 'Vidcore', urlTemplate: 'https://vidcore.io/tv/{externalId}/{season}/{episode}?autoPlay=true&theme=ff5a1f&nextButton=true&autoNext=true' }
 ]);
 
 export const currentStreamData = ref({
@@ -189,12 +189,14 @@ export function buildStreamUrl(
     const serverName = server.name.toLowerCase();
     
     // Different servers use different timestamp parameters
-    if (serverName.includes('vidking')) {
-      // VidKing uses 'progress' parameter
+    if (serverName === 'vidy') {
+      // Vidy uses 'progress' parameter
       const separator = url.includes('?') ? '&' : '?';
       url += `${separator}progress=${timestampSeconds}`;
-    } else if (serverName.includes('111movies')) {
-      url += `?progress=${timestampSeconds}`;
+    } else if (serverName === 'cinesrc') {
+      url += `&t=${timestampSeconds}`;
+    } else if (serverName === 'vidcore') {
+      url += `&startAt=${timestampSeconds}`;
     } else if (serverName.includes('vidlink') || serverName.includes('vidfast')) {
       url += `?startAt=${timestampSeconds}`;
     }

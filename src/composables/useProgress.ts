@@ -9,6 +9,7 @@ export interface ProgressEntry {
   type: 'movie' | 'tv';
   season?: number;
   episode?: number;
+  completed?: boolean;
 }
 
 interface ProgressMap {
@@ -21,12 +22,21 @@ export const isTracking = ref(false);
 
 const TRACKED_ORIGINS: Record<string, string> = {
   'vidlink.pro': 'vidlink',
-  'www.vidking.net': 'vidking',
+  'www.vidy.st': 'vidy',
+  'cinesrc.st': 'cinesrc',
+  'embed.vidrift.net': 'vidrift',
   'player.videasy.net': 'videasy',
   'vidfast.pro': 'vidfast',
-  '111movies.net': '111movies',
+  'player.vidlove.cc': 'vidlove',
+  'vidcore.io': 'vidcore',
   'vsembed.ru': 'vidsrc',
   'anyembed.xyz': 'anyembed'
+};
+
+// These players ignore start-time URL params and only seek when the parent asks.
+const RESUME_MESSAGES: Record<string, (seconds: number) => unknown> = {
+  vidlove: seconds => ({ type: 'seek', time: seconds }),
+  vidrift: seconds => ({ type: 'vidrift:resume', currentTime: seconds })
 };
 
 function parseMessage(raw: unknown): Record<string, unknown> | null {
@@ -45,8 +55,7 @@ function normalizeProgress(
   if (!source) return null;
 
   switch (source) {
-    case 'vidlink':
-    case 'vidking': {
+    case 'vidlink': {
       if (data.type === 'MEDIA_DATA') {
         const d = data.data as Record<string, unknown> | undefined;
         if (d) {
@@ -61,6 +70,30 @@ function normalizeProgress(
         if (d && d.currentTime !== undefined && d.duration !== undefined) {
           return { watched: d.currentTime as number, duration: d.duration as number };
         }
+      }
+      break;
+    }
+
+    case 'vidy': {
+      if (data.type === 'PLAYER_EVENT') {
+        const d = data.data as Record<string, unknown> | undefined;
+        if (d && d.timestamp !== undefined && d.duration !== undefined) {
+          return { watched: d.timestamp as number, duration: d.duration as number };
+        }
+      }
+      break;
+    }
+
+    case 'vidrift': {
+      if (data.type === 'vidrift:progress' && data.currentTime !== undefined && data.duration !== undefined) {
+        return { watched: data.currentTime as number, duration: data.duration as number };
+      }
+      break;
+    }
+
+    case 'cinesrc': {
+      if (data.type === 'cinesrc:timeupdate' && data.currentTime !== undefined && data.duration !== undefined) {
+        return { watched: data.currentTime as number, duration: data.duration as number };
       }
       break;
     }
@@ -91,11 +124,12 @@ function normalizeProgress(
       break;
     }
 
-    case '111movies': {
-      if (data.event === 'timeupdate' || data.event === 'play') {
-        const d = data.data as Record<string, number> | undefined;
-        if (d && d.currentTime !== undefined && d.duration !== undefined) {
-          return { watched: d.currentTime, duration: d.duration };
+    case 'vidlove':
+    case 'vidcore': {
+      if (data.type === 'PLAYER_EVENT') {
+        const d = data.data as Record<string, unknown> | undefined;
+        if (d && d.event === 'timeupdate' && d.currentTime !== undefined && d.duration !== undefined) {
+          return { watched: d.currentTime as number, duration: d.duration as number };
         }
       }
       break;
@@ -149,15 +183,10 @@ export function saveProgress(
   if (duration <= 0 || watched < 0) return;
 
   const key = buildKey(mediaId, type, season, episode);
-  const watchedPercent = (watched / duration) * 100;
+  const completed = (watched / duration) * 100 >= 95;
 
-  if (watchedPercent >= 95) {
-    delete watchProgress.value[key];
-    watchProgress.value = { ...watchProgress.value };
-    if (isInWatchlist(mediaId, type)) {
-      setWatched(mediaId, type, true);
-    }
-    return;
+  if (completed && isInWatchlist(mediaId, type)) {
+    setWatched(mediaId, type, true);
   }
 
   watchProgress.value[key] = {
@@ -166,7 +195,8 @@ export function saveProgress(
     lastUpdated: Date.now(),
     type,
     season,
-    episode
+    episode,
+    completed
   };
 }
 
@@ -208,6 +238,15 @@ export function getAllProgress(): ProgressMap {
   return watchProgress.value;
 }
 
+export type TitleProgress = ProgressEntry & { mediaId: string };
+
+export function listProgress(): TitleProgress[] {
+  return Object.entries(watchProgress.value).map(([key, entry]) => ({
+    ...entry,
+    mediaId: key.split(':')[0]
+  }));
+}
+
 export function startProgressTracking(
   mediaId: string | number,
   type: 'movie' | 'tv',
@@ -215,6 +254,9 @@ export function startProgressTracking(
   episode?: number
 ): () => void {
   isTracking.value = true;
+
+  const resumeAt = getResumeTimestamp(mediaId, type, season, episode);
+  let resumePending = resumeAt > 0;
 
   const handler = (event: MessageEvent) => {
     const origin = event.origin?.replace(/^https?:\/\//, '') || '';
@@ -224,9 +266,18 @@ export function startProgressTracking(
     if (!data) return;
 
     const progress = normalizeProgress(origin, data);
-    if (progress) {
-      saveProgress(mediaId, type, progress.watched, progress.duration, season, episode);
+    if (!progress) return;
+
+    // Seek on the first progress report, when the player is known to be listening,
+    // and skip saving that pre-seek position so it doesn't overwrite the resume point.
+    const resumeMessage = RESUME_MESSAGES[TRACKED_ORIGINS[origin]];
+    if (resumePending && resumeMessage) {
+      resumePending = false;
+      (event.source as Window | null)?.postMessage(resumeMessage(resumeAt), event.origin);
+      return;
     }
+
+    saveProgress(mediaId, type, progress.watched, progress.duration, season, episode);
   };
 
   window.addEventListener('message', handler);

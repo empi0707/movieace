@@ -15,7 +15,7 @@
                 </div>
 
                 <h1 v-if="movie" class="watch-stage__title">{{ movie.title }}</h1>
-                <span v-else class="watch-stage__title-skeleton" aria-hidden="true" />
+                <span v-else-if="!error" class="watch-stage__title-skeleton" aria-hidden="true" />
 
                 <div class="watch-stage__actions">
                     <ShareScreen />
@@ -79,6 +79,11 @@
                 </div>
             </section>
 
+            <p v-else-if="error" class="watch-stage__load-error" role="alert">
+                Film details didn’t load. The stream above may still play.
+                <button type="button" @click="loadMovie">Try again</button>
+            </p>
+
             <p class="watch-stage__disclaimer meta">
                 Streams are mirrored from third-party providers. {{ brand }} does not host video files.
             </p>
@@ -99,6 +104,7 @@ import {
     buildStreamUrl
 } from '../composables/useStream';
 import { getResumeTimestamp } from '../composables/useProgress';
+import { addViewedItem } from '../composables/useHistory';
 import { useWebImage } from '../utils/useWebImage';
 import { BRAND } from '../config/brand';
 
@@ -164,6 +170,7 @@ export default defineComponent({
         });
 
         const loadMovie = async () => {
+            error.value = null;
             if (!movieId.value) {
                 error.value = 'Invalid movie ID';
                 return;
@@ -174,6 +181,15 @@ export default defineComponent({
                 if (!data.value) throw new Error('No movie data received');
                 movie.value = data.value;
                 document.title = `Stream · ${data.value.title}`;
+                addViewedItem({
+                    id: data.value.id,
+                    title: data.value.title,
+                    image: data.value.poster_path,
+                    rating: data.value.vote_average,
+                    categories: data.value.genres.map(g => g.id),
+                    adult: data.value.adult,
+                    type: 'movie'
+                });
 
                 if (!getPreferredStreamData(movieId.value, 'movie')) {
                     savePreferredServer(movieId.value, 0, 'movie');
@@ -238,7 +254,9 @@ export default defineComponent({
             releaseYear,
             runtimeLabel,
             changeServer,
-            goBack
+            goBack,
+            error,
+            loadMovie
         };
     }
 });
@@ -548,6 +566,27 @@ export default defineComponent({
         color: var(--bone-200);
         line-height: var(--lh-base);
         max-width: 60ch;
+    }
+
+    &__load-error {
+        max-width: 1280px;
+        margin: 0 auto var(--s-5);
+        padding: 0 var(--s-4);
+        text-align: center;
+        color: var(--bone-300);
+
+        button {
+            all: unset;
+            cursor: pointer;
+            color: var(--ember);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+
+            &:focus-visible {
+                outline: 2px solid var(--ember);
+                outline-offset: 2px;
+            }
+        }
     }
 
     &__disclaimer {

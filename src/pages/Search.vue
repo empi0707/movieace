@@ -55,6 +55,16 @@
                         <span class="meta">Searching the archive…</span>
                     </div>
 
+                    <div v-else-if="loadError" class="search-page__empty" role="alert">
+                        <h3 class="search-page__empty-title display">The search didn’t go through.</h3>
+                        <p class="search-page__empty-desc">
+                            We couldn’t reach the archive. Check your connection, then try again.
+                        </p>
+                        <button type="button" class="search-page__more-btn" @click="retrySearch">
+                            Try again
+                        </button>
+                    </div>
+
                     <template v-else-if="activeTab === 'movies' && movies.length">
                         <div class="search-page__grid">
                             <PosterCard
@@ -214,6 +224,7 @@ export default defineComponent({
         );
         const isLoading = ref(false);
         const isLoadingMore = ref(false);
+        const loadError = ref(false);
 
         const popularSearches = [
             'Dune', 'The Bear', 'Christopher Nolan', 'Succession',
@@ -268,8 +279,12 @@ export default defineComponent({
             else isLoadingMore.value = true;
 
             try {
-                await fetchSearchResults(q, page);
-                if (page === 1) chooseDefaultTab();
+                const { error } = await fetchSearchResults(q, page);
+                if (page === 1) {
+                    loadError.value = !!error.value;
+                    if (loadError.value) clearSearchResults();
+                    else chooseDefaultTab();
+                }
             } finally {
                 isLoading.value = false;
                 isLoadingMore.value = false;
@@ -323,6 +338,8 @@ export default defineComponent({
             }
         };
 
+        const retrySearch = () => performSearch(searchTerm.value);
+
         const loadMore = async () => {
             if (!hasMore.value || !searchTerm.value) return;
             await performSearch(searchTerm.value, reqMetaData.value.page + 1);
@@ -370,7 +387,9 @@ export default defineComponent({
             onSearchInput,
             handleClearSearch,
             runSearch,
-            loadMore
+            loadMore,
+            loadError,
+            retrySearch
         };
     }
 });
@@ -492,8 +511,12 @@ export default defineComponent({
 
     &__grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: var(--s-5) var(--s-4);
+
+        @media (min-width: 480px) {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        }
 
         @media (min-width: 720px) {
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));

@@ -48,15 +48,21 @@ export const useSearch = () => {
         let error = ref("")
         try {
             loading.value = true
-            const req = await useAxios().get(`https://api.themoviedb.org/3/search/multi?query=${query}&page=${pageNumber}`)
+            const req = await useAxios().get('https://api.themoviedb.org/3/search/multi', {
+                params: { query, page: pageNumber }
+            })
             const res = req.data.results
             reqMetaData.value = {
                 page: req.data.page,
                 total_pages: req.data.total_pages
             }
-            discoveredMovies.value= res.filter((movie: any) => movie.media_type === "movie")
-            discoveredTv.value= res.filter((tv: any) => tv.media_type === "tv")
-            discoveredPeople.value= res.filter((people: any) => people.media_type === "person")
+            const movies = res.filter((movie: any) => movie.media_type === "movie")
+            const tv = res.filter((tv: any) => tv.media_type === "tv")
+            const people = res.filter((people: any) => people.media_type === "person")
+            const isFirstPage = pageNumber === 1
+            discoveredMovies.value = isFirstPage ? movies : [...discoveredMovies.value, ...movies]
+            discoveredTv.value = isFirstPage ? tv : [...discoveredTv.value, ...tv]
+            discoveredPeople.value = isFirstPage ? people : [...discoveredPeople.value, ...people]
         } catch (err: any) {
             error.value = err.message
         } finally {

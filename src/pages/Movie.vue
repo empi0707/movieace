@@ -72,6 +72,10 @@
             <span class="meta">Loading feature…</span>
         </div>
 
+        <main v-else id="main" role="main">
+            <ErrorState title="This film didn’t load." @retry="retry" />
+        </main>
+
         <SiteFooter />
 
         <TrailerDialog
@@ -96,9 +100,9 @@ import CastGrid from '../components/detail/CastGrid.vue';
 import ReviewsPullQuote, { ReviewEntry } from '../components/detail/ReviewsPullQuote.vue';
 import CuratedRail, { CuratedItem } from '../components/rails/CuratedRail.vue';
 import TrailerDialog from '../components/detail/TrailerDialog.vue';
+import ErrorState from '../components/feedback/ErrorState.vue';
 import { useMovies, MovieDetails, Cast, Crew } from '../composables/useMovies';
 import { fetchTrailerVideos, type TrailerVideo } from '../composables/useTrailer';
-import { addViewedItem } from '../composables/useHistory';
 import { getLastWatchedMetaData } from '../composables/useStream';
 import useAxios from '../composables/useAxios';
 import { primeGenres } from '../composables/useGenreLookup';
@@ -136,7 +140,8 @@ export default defineComponent({
         CastGrid,
         ReviewsPullQuote,
         CuratedRail,
-        TrailerDialog
+        TrailerDialog,
+        ErrorState
     },
     setup() {
         const route = useRoute();
@@ -335,9 +340,11 @@ export default defineComponent({
             }
         };
 
+        const retry = () => loadMovie(String(route.params.id));
+
         onMounted(() => {
             primeGenres();
-            loadMovie(String(route.params.id));
+            retry();
         });
 
         watch(
@@ -366,7 +373,8 @@ export default defineComponent({
             playRoute,
             playLabel,
             openTrailer,
-            closeTrailer
+            closeTrailer,
+            retry
         };
     }
 });

@@ -82,6 +82,10 @@
             <span class="meta">Loading series…</span>
         </div>
 
+        <main v-else id="main" role="main">
+            <ErrorState title="This series didn’t load." @retry="retry" />
+        </main>
+
         <SiteFooter />
 
         <TrailerDialog
@@ -107,10 +111,10 @@ import ReviewsPullQuote, { ReviewEntry } from '../components/detail/ReviewsPullQ
 import SeasonTabs from '../components/detail/SeasonTabs.vue';
 import CuratedRail, { CuratedItem } from '../components/rails/CuratedRail.vue';
 import TrailerDialog from '../components/detail/TrailerDialog.vue';
+import ErrorState from '../components/feedback/ErrorState.vue';
 import { useTvShows, TVShowDetails, TVShowType } from '../composables/useTvShows';
 import { Cast, Crew } from '../composables/useMovies';
 import { fetchTrailerVideos, type TrailerVideo } from '../composables/useTrailer';
-import { addViewedItem } from '../composables/useHistory';
 import { getLastWatchedMetaData } from '../composables/useStream';
 import useAxios from '../composables/useAxios';
 import { primeGenres } from '../composables/useGenreLookup';
@@ -139,7 +143,8 @@ export default defineComponent({
         ReviewsPullQuote,
         SeasonTabs,
         CuratedRail,
-        TrailerDialog
+        TrailerDialog,
+        ErrorState
     },
     setup() {
         const route = useRoute();
@@ -334,9 +339,11 @@ export default defineComponent({
             }
         };
 
+        const retry = () => loadShow(String(route.params.id));
+
         onMounted(() => {
             primeGenres();
-            loadShow(String(route.params.id));
+            retry();
         });
 
         watch(
@@ -365,7 +372,8 @@ export default defineComponent({
             playRoute,
             playLabel,
             openTrailer,
-            closeTrailer
+            closeTrailer,
+            retry
         };
     }
 });

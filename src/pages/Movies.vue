@@ -80,6 +80,16 @@
                         <span class="meta">Pulling the reel…</span>
                     </div>
 
+                    <div v-else-if="loadError" class="discover__empty" role="alert">
+                        <h3 class="discover__empty-title display">The reel snapped.</h3>
+                        <p class="discover__empty-desc">
+                            We couldn’t reach the catalog. Check your connection, then try again.
+                        </p>
+                        <button type="button" class="discover__empty-reset" @click="reload">
+                            Try again
+                        </button>
+                    </div>
+
                     <div v-else-if="!results.length" class="discover__empty">
                         <div class="discover__empty-icon" aria-hidden="true">
                             <svg viewBox="0 0 64 64" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.4">
@@ -186,6 +196,7 @@ export default defineComponent({
         const totalResults = ref(0);
         const isLoading = ref(false);
         const isLoadingMore = ref(false);
+        const loadError = ref(false);
 
         const filters = ref<DiscoverFilters>(makeDefaultFilters());
         const searchTerm = ref<string>('');
@@ -277,6 +288,7 @@ export default defineComponent({
             try {
                 const url = searchTerm.value ? buildSearchUrl(pageNum) : buildDiscoverUrl(pageNum);
                 const { data } = await fetchDiscoverMovies(url);
+                if (!append) loadError.value = !data.value;
                 const fresh = (data.value?.results ?? []) as Movie[];
                 totalPages.value = data.value?.total_pages ?? 0;
                 totalResults.value = data.value?.total_results ?? 0;
@@ -423,6 +435,8 @@ export default defineComponent({
             activeChips,
             onFiltersChange,
             resetFilters,
+            reload,
+            loadError,
             onSearchInput,
             clearSearch,
             loadMore
@@ -664,8 +678,12 @@ export default defineComponent({
 
     &__grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: var(--s-5) var(--s-4);
+
+        @media (min-width: 480px) {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        }
 
         @media (min-width: 720px) {
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));

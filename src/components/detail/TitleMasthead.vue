@@ -5,6 +5,8 @@
                 v-if="backdropUrl"
                 class="masthead__art"
                 :src="backdropUrl"
+                :srcset="backdropSrcset"
+                sizes="max(100vw, 142vh)"
                 :alt="title"
                 fetchpriority="high"
                 decoding="async"
@@ -146,7 +148,13 @@ export default defineComponent({
         useAmbientColor(ambientPath, rootRef);
 
         const backdropUrl = computed(() =>
-            props.backdropPath ? `${IMAGE_BASEURL}original${props.backdropPath}` : ''
+            props.backdropPath ? `${IMAGE_BASEURL}w1280${props.backdropPath}` : ''
+        );
+
+        const backdropSrcset = computed(() =>
+            props.backdropPath
+                ? `${IMAGE_BASEURL}w1280${props.backdropPath} 1280w, ${IMAGE_BASEURL}original${props.backdropPath} 1920w`
+                : ''
         );
 
         const year = computed(() =>
@@ -195,6 +203,7 @@ export default defineComponent({
         return {
             rootRef,
             backdropUrl,
+            backdropSrcset,
             year,
             ratingLabel,
             inWatchlist,
