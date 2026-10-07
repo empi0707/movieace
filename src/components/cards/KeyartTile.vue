@@ -108,7 +108,7 @@ export default defineComponent({
         transform: translateY(-4px);
         box-shadow:
             var(--shadow-lg),
-            0 0 0 1px rgba(255, 90, 31, 0.22);
+            0 0 0 1px rgba(var(--ember-rgb), 0.22);
 
         .keyart-tile__img { transform: scale(1.04); }
     }

@@ -14,7 +14,6 @@
                         class="mini-player__iframe"
                         allow="autoplay *; fullscreen *; encrypted-media *; picture-in-picture *"
                         allowfullscreen
-                        referrerpolicy="strict-origin-when-cross-origin"
                         frameborder="0"
                     />
                     <div class="mini-player__veil" aria-hidden="true" />

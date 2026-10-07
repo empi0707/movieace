@@ -253,7 +253,7 @@ export default defineComponent({
         .is-peeking & {
             box-shadow:
                 0 20px 46px rgba(0, 0, 0, 0.55),
-                0 0 0 1px rgba(255, 90, 31, 0.25);
+                0 0 0 1px rgba(var(--ember-rgb), 0.25);
         }
     }
 
@@ -445,7 +445,7 @@ export default defineComponent({
             background: var(--ember);
             color: var(--ink-900);
             border-color: var(--ember);
-            box-shadow: 0 8px 18px rgba(255, 90, 31, 0.35);
+            box-shadow: 0 8px 18px rgba(var(--ember-rgb), 0.35);
 
             &:hover {
                 background: var(--ember-600);

@@ -1,20 +1,16 @@
 <template>
     <header class="site-header" :class="{ 'is-scrolled': scrolled }">
         <div class="container-lm site-header__inner">
-            <router-link to="/" class="site-header__logo" aria-label="Movieace home">
-                <span class="site-header__mark">
-                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-                        <path
-                            fill="currentColor"
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M0 6.7V5.3C0 3.9.56 2.55 1.55 1.55A5.3 5.3 0 0 1 5.3 0h3.67L5.62 6.7H0Zm10.84-6.7h6.5L13.99 6.7H7.49L10.84 0Zm8.36.02A5.3 5.3 0 0 1 22.45 1.55 5.3 5.3 0 0 1 24 5.3v1.4h-8.13L19.2.02ZM24 8.37V18.7a5.3 5.3 0 0 1-5.3 5.3H5.3A5.3 5.3 0 0 1 0 18.7V8.37h24Zm-13.85 3.33a1 1 0 0 0-1.38.03 1 1 0 0 0-.32.93v5.95a1 1 0 0 0 .32.92 1 1 0 0 0 1.38.03l5.52-2.97a1 1 0 0 0 .73-1.23 1 1 0 0 0-.73-1.23l-5.52-2.97Z"
-                        />
-                    </svg>
-                </span>
+            <router-link to="/" class="site-header__logo" :aria-label="`${brand} home`">
+                <img
+                    class="site-header__mark"
+                    :src="logoUrl"
+                    alt=""
+                    aria-hidden="true"
+                    @error="resetEmbedLogo"
+                />
                 <span class="site-header__wordmark">
-                    <span class="site-header__name">Movieace</span>
-                    <span class="site-header__kicker eyebrow">A Cinema Periodical</span>
+                    <span class="site-header__name">{{ brand }}</span>
                 </span>
             </router-link>
 
@@ -68,7 +64,7 @@
             </div>
         </div>
 
-        <LmDrawer v-model="drawerOpen" side="right" title="Movieace">
+        <LmDrawer v-model="drawerOpen" side="right" :title="brand">
             <nav class="site-header__drawer-nav" aria-label="Mobile">
                 <router-link
                     v-for="item in primaryNav"
@@ -96,6 +92,7 @@ import { defineComponent, onMounted, onBeforeUnmount, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import LmDrawer from '../primitives/Drawer.vue';
 import { openPalette } from '../../composables/useCommandPalette';
+import { BRAND, LOGO_URL, resetEmbedLogo } from '../../config/brand';
 
 interface NavItem {
     label: string;
@@ -159,6 +156,9 @@ export default defineComponent({
         });
 
         return {
+            brand: BRAND,
+            logoUrl: LOGO_URL,
+            resetEmbedLogo,
             primaryNav,
             scrolled,
             drawerOpen,
@@ -223,15 +223,12 @@ export default defineComponent({
     }
 
     &__mark {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        background: var(--ember);
-        color: var(--ink-900);
+        display: block;
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
         border-radius: var(--r-sm);
-        box-shadow: 0 6px 20px rgba(255, 90, 31, 0.25);
+        box-shadow: 0 6px 20px rgba(var(--ember-rgb), 0.25);
     }
 
     &__wordmark {
@@ -246,12 +243,6 @@ export default defineComponent({
         font-size: var(--fs-lg);
         letter-spacing: var(--ls-tight);
         font-variation-settings: 'opsz' 72, 'SOFT' 40;
-    }
-
-    &__kicker {
-        margin-top: 3px;
-        color: var(--bone-400);
-        font-size: 0.625rem;
     }
 
     // ── Nav links ────────────────────────────────────────────────────────

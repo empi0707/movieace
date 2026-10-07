@@ -299,6 +299,7 @@ import { useActor, ActorDetails, ActorImages } from '../composables/useActor';
 import { useWebImage } from '../utils/useWebImage';
 import { useToast } from '../composables/useToast';
 import { useAmbientColor } from '../composables/useAmbientColor';
+import { BRAND } from '../config/brand';
 
 interface CreditItem {
     id: number;
@@ -378,8 +379,8 @@ export default defineComponent({
                 credits.value = cast.filter(c => c.media_type === 'movie' || c.media_type === 'tv');
 
                 document.title = actorDetails.value
-                    ? `${actorDetails.value.name} — Movieace`
-                    : 'People — Movieace';
+                    ? `${actorDetails.value.name} — ${BRAND.value}`
+                    : `People — ${BRAND.value}`;
             } catch (e: any) {
                 hasError.value = true;
                 errorMessage.value = e?.message || 'Could not load this person.';
@@ -1113,7 +1114,7 @@ function decadeForCredit(c: { release_date?: string; first_air_date?: string }):
         transform: translateY(-4px);
         box-shadow:
             var(--shadow-lg),
-            0 0 0 1px rgba(255, 90, 31, 0.22);
+            0 0 0 1px rgba(var(--ember-rgb), 0.22);
 
         img { transform: scale(1.04); }
     }

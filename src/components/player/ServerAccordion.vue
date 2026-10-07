@@ -247,10 +247,10 @@ export default defineComponent({
     }
 
     &.is-active {
-        background: linear-gradient(135deg, rgba(255, 90, 31, 0.14), rgba(255, 90, 31, 0.06));
+        background: linear-gradient(135deg, rgba(var(--ember-rgb), 0.14), rgba(var(--ember-rgb), 0.06));
         box-shadow:
-            inset 0 0 0 1px rgba(255, 90, 31, 0.45),
-            0 0 0 1px rgba(255, 90, 31, 0.12);
+            inset 0 0 0 1px rgba(var(--ember-rgb), 0.45),
+            0 0 0 1px rgba(var(--ember-rgb), 0.12);
     }
 
     &.is-disabled {

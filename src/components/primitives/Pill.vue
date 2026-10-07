@@ -50,8 +50,8 @@ export default defineComponent({
 
     &--ember {
         color: var(--ember);
-        background: rgba(255, 90, 31, 0.12);
-        box-shadow: inset 0 0 0 1px rgba(255, 90, 31, 0.3);
+        background: rgba(var(--ember-rgb), 0.12);
+        box-shadow: inset 0 0 0 1px rgba(var(--ember-rgb), 0.3);
     }
 
     &--gold {

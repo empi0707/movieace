@@ -1,11 +1,12 @@
 {
-  "name": "movieace",
+  "name": "Cataz",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "build": "vue-tsc && vite build && node scripts/generate-sitemap.mjs",
+    "sitemap": "node scripts/generate-sitemap.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

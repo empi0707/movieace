@@ -1,5 +1,6 @@
 import { ref, watch } from 'vue';
 import { useWebImage } from '../utils/useWebImage';
+import { PRIMARY_COLOR_RGB } from '../config/brand';
 
 // ============================================================================
 // useAmbientColor — extract a saturated dominant color from a TMDB backdrop
@@ -12,7 +13,7 @@ import { useWebImage } from '../utils/useWebImage';
 // when the user is on a locked-down browser.
 // ============================================================================
 
-const FALLBACK = '255, 90, 31'; // ember
+const getFallback = (): string => PRIMARY_COLOR_RGB.value;
 const CACHE_PREFIX = 'lm:ambient:';
 const memoryCache = new Map<string, string>();
 
@@ -45,7 +46,7 @@ const sampleImage = (img: HTMLImageElement, opts: ExtractOptions): string => {
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!ctx) return FALLBACK;
+    if (!ctx) return getFallback();
 
     ctx.drawImage(img, 0, 0, W, H);
 
@@ -53,7 +54,7 @@ const sampleImage = (img: HTMLImageElement, opts: ExtractOptions): string => {
     try {
         data = ctx.getImageData(0, 0, W, H).data;
     } catch {
-        return FALLBACK; // CORS taint
+        return getFallback(); // CORS taint
     }
 
     const minSat = opts.minSaturation ?? 0.18;
@@ -100,7 +101,7 @@ const sampleImage = (img: HTMLImageElement, opts: ExtractOptions): string => {
         }
     }
 
-    if (weightSum === 0) return FALLBACK;
+    if (weightSum === 0) return getFallback();
 
     const fr = Math.round(r / weightSum);
     const fg = Math.round(g / weightSum);
@@ -109,7 +110,7 @@ const sampleImage = (img: HTMLImageElement, opts: ExtractOptions): string => {
 };
 
 export const extractAmbientColor = (path: string | null | undefined): Promise<string> => {
-    if (!path) return Promise.resolve(FALLBACK);
+    if (!path) return Promise.resolve(getFallback());
 
     const cached = memoryCache.get(path);
     if (cached) return Promise.resolve(cached);
@@ -131,8 +132,9 @@ export const extractAmbientColor = (path: string | null | undefined): Promise<st
             resolve(value);
         };
         img.onerror = () => {
-            memoryCache.set(path, FALLBACK);
-            resolve(FALLBACK);
+            const fallback = getFallback();
+            memoryCache.set(path, fallback);
+            resolve(fallback);
         };
         img.src = useWebImage(path, 'small');
     });
@@ -157,7 +159,7 @@ export const useAmbientColor = (
     pathRef: { value: string | null | undefined },
     targetRef?: { value: HTMLElement | null }
 ) => {
-    const ambient = ref<string>(FALLBACK);
+    const ambient = ref<string>(getFallback());
 
     const apply = (value: string) => {
         ambient.value = value;
@@ -166,10 +168,11 @@ export const useAmbientColor = (
     };
 
     const reset = () => {
-        ambient.value = FALLBACK;
+        const fallback = getFallback();
+        ambient.value = fallback;
         const el = targetRef?.value ?? null;
         if (el) clearOnTarget(el);
-        else document.documentElement.style.setProperty('--ambient', FALLBACK);
+        else document.documentElement.style.setProperty('--ambient', fallback);
     };
 
     watch(

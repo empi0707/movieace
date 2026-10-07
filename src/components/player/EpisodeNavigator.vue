@@ -408,8 +408,8 @@ export default defineComponent({
     }
 
     &.is-active {
-        background: linear-gradient(135deg, rgba(255, 90, 31, 0.12), rgba(255, 90, 31, 0.04));
-        box-shadow: inset 0 0 0 1px rgba(255, 90, 31, 0.4);
+        background: linear-gradient(135deg, rgba(var(--ember-rgb), 0.12), rgba(var(--ember-rgb), 0.04));
+        box-shadow: inset 0 0 0 1px rgba(var(--ember-rgb), 0.4);
     }
 
     &__still {
@@ -505,8 +505,8 @@ export default defineComponent({
         color: var(--ember);
         padding: 0.25rem 0.6rem;
         border-radius: var(--r-pill);
-        background: rgba(255, 90, 31, 0.12);
-        box-shadow: inset 0 0 0 1px rgba(255, 90, 31, 0.3);
+        background: rgba(var(--ember-rgb), 0.12);
+        box-shadow: inset 0 0 0 1px rgba(var(--ember-rgb), 0.3);
     }
 
     @media (max-width: 720px) {

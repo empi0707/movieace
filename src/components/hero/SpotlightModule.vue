@@ -207,7 +207,7 @@ export default defineComponent({
             transform: translateY(-3px);
             box-shadow:
                 var(--shadow-lg),
-                0 0 0 1px rgba(255, 90, 31, 0.32);
+                0 0 0 1px rgba(var(--ember-rgb), 0.32);
 
             img { transform: scale(1.03); }
             .spotlight__art-frame { border-color: var(--ember); }

@@ -34,12 +34,13 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue';
+import { BRAND } from '../config/brand';
 
 export default defineComponent({
     name: 'NotFound',
     setup() {
         onMounted(() => {
-            document.title = '404 · Movieace';
+            document.title = `404 · ${BRAND.value}`;
         });
     }
 });
@@ -67,7 +68,7 @@ export default defineComponent({
         inset: -20% -10%;
         z-index: -1;
         background:
-            radial-gradient(ellipse at 30% 20%, rgba(255, 90, 31, 0.18) 0%, transparent 55%),
+            radial-gradient(ellipse at 30% 20%, rgba(var(--ember-rgb), 0.18) 0%, transparent 55%),
             radial-gradient(ellipse at 80% 80%, rgba(201, 167, 106, 0.12) 0%, transparent 55%),
             radial-gradient(ellipse at center, var(--ink-850) 0%, var(--ink-900) 70%);
         filter: blur(20px);
@@ -107,7 +108,7 @@ export default defineComponent({
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 0 24px 60px rgba(255, 90, 31, 0.18);
+        text-shadow: 0 24px 60px rgba(var(--ember-rgb), 0.18);
     }
 
     &__line {
@@ -145,7 +146,7 @@ export default defineComponent({
         font-weight: 600;
         text-decoration: none;
         border-radius: var(--r-pill);
-        box-shadow: 0 12px 32px rgba(255, 90, 31, 0.35);
+        box-shadow: 0 12px 32px rgba(var(--ember-rgb), 0.35);
         transition:
             background-color var(--dur-fast) var(--ease-out),
             transform var(--dur-fast) var(--ease-out),
@@ -154,7 +155,7 @@ export default defineComponent({
         &:hover {
             background: var(--ember-600);
             transform: translateY(-2px);
-            box-shadow: 0 16px 40px rgba(255, 90, 31, 0.45);
+            box-shadow: 0 16px 40px rgba(var(--ember-rgb), 0.45);
         }
 
         &:focus-visible {

@@ -371,7 +371,7 @@ export default defineComponent({
         transition: box-shadow var(--dur-fast) var(--ease-out);
 
         &.is-priming {
-            box-shadow: inset 0 0 0 1px rgba(255, 90, 31, 0.45);
+            box-shadow: inset 0 0 0 1px rgba(var(--ember-rgb), 0.45);
         }
     }
 

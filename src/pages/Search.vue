@@ -193,6 +193,7 @@ import {
     reqMetaData
 } from '../composables/useSearch';
 import { addSearchTerm, searchHistory } from '../composables/useHistory';
+import { BRAND } from '../config/brand';
 
 type TabKey = 'movies' | 'shows' | 'people';
 
@@ -341,7 +342,7 @@ export default defineComponent({
         );
 
         onMounted(() => {
-            document.title = 'Search — Movieace';
+            document.title = `Search — ${BRAND.value}`;
             window.scrollTo(0, 0);
             if (searchTerm.value.trim()) {
                 performSearch(searchTerm.value);
@@ -568,7 +569,7 @@ export default defineComponent({
         &:hover:not(:disabled), &:focus-visible:not(:disabled) {
             color: var(--ember);
             border-color: var(--ember);
-            background: rgba(255, 90, 31, 0.08);
+            background: rgba(var(--ember-rgb), 0.08);
         }
 
         &:disabled {
@@ -633,13 +634,13 @@ export default defineComponent({
 
         &--ember {
             color: var(--ember);
-            border-color: rgba(255, 90, 31, 0.25);
-            background: rgba(255, 90, 31, 0.06);
+            border-color: rgba(var(--ember-rgb), 0.25);
+            background: rgba(var(--ember-rgb), 0.06);
 
             &:hover, &:focus-visible {
                 color: var(--ember);
-                background: rgba(255, 90, 31, 0.14);
-                border-color: rgba(255, 90, 31, 0.5);
+                background: rgba(var(--ember-rgb), 0.14);
+                border-color: rgba(var(--ember-rgb), 0.5);
             }
         }
     }

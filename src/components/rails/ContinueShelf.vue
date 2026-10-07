@@ -211,7 +211,7 @@ export default defineComponent({
         transition:
             opacity var(--dur-fast) var(--ease-out),
             transform var(--dur-fast) var(--ease-out);
-        box-shadow: 0 8px 22px rgba(255, 90, 31, 0.45);
+        box-shadow: 0 8px 22px rgba(var(--ember-rgb), 0.45);
 
         svg { width: 18px; height: 18px; margin-left: 2px; }
     }

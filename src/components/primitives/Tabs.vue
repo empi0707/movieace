@@ -143,7 +143,7 @@ export default defineComponent({
         border-radius: var(--r-pill);
         .is-active & {
             color: var(--ember);
-            background: rgba(255, 90, 31, 0.14);
+            background: rgba(var(--ember-rgb), 0.14);
         }
     }
 

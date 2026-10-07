@@ -1,5 +1,6 @@
 import { useStorage } from "@vueuse/core";
 import { ref } from "vue";
+import { PRIMARY_COLOR } from '../config/brand';
 
 interface MovieServer {
   serverIndex: number;
@@ -24,12 +25,12 @@ const defaultStreamData: StreamData = {
 export const streamData = useStorage<StreamData>('streamData', defaultStreamData);
 
 export const movieServers = ref<Server[]>([
+  { name: 'VidSrcMe', urlTemplate: 'https://vidsrcme.su/embed/movie/{tmdbId}' },
   { name: 'VidKing', urlTemplate: 'https://www.vidking.net/embed/movie/{tmdbId}?autoPlay=true' },
-  { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/movie/{tmdbId}?color=#4eb5ff' },
+  { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/movie/{tmdbId}?color=%23{primaryColor}' },
   { name: 'Cinemaos', urlTemplate: 'https://cinemaos.tech/player/{tmdbId}' },
   { name: 'VidSrc RU', urlTemplate: 'https://vidsrc-embed.ru/embed/movie/{tmdbId}' },
   { name: 'VidSrc SU', urlTemplate: 'https://vidsrc-embed.su/embed/movie/{tmdbId}' },
-  { name: 'VidSrcMe', urlTemplate: 'https://vidsrcme.su/embed/movie/{tmdbId}' },
   { name: 'MultiEmbed', urlTemplate: 'https://multiembed.mov/?video_id={tmdbId}&tmdb=1' },
   { name: 'Vsrc', urlTemplate: 'https://vsrc.su/embed/movie/{tmdbId}' },
   { name: 'VidLink', urlTemplate: 'https://vidlink.pro/movie/{tmdbId}' },
@@ -41,12 +42,12 @@ export const movieServers = ref<Server[]>([
 ]);
 
 export const tvServers = ref<Server[]>([
+  { name: 'VidSrcMe', urlTemplate: 'https://vidsrcme.su/embed/tv/{externalId}/{season}/{episode}' },
   { name: 'VidKing', urlTemplate: 'https://www.vidking.net/embed/tv/{externalId}/{season}/{episode}?autoPlay=true&nextEpisode=true&episodeSelector=true' },
-  { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/tv/{externalId}/{season}/{episode}?color=#4eb5ff&nextEpisode=true&autoplayNextEpisode=true&episodeSelector=true' },
+  { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/tv/{externalId}/{season}/{episode}?color=%23{primaryColor}&nextEpisode=true&autoplayNextEpisode=true&episodeSelector=true' },
   { name: 'Cinemaos', urlTemplate: 'https://cinemaos.tech/player/{externalId}/{season}/{episode}' },
   { name: 'VidSrc RU', urlTemplate: 'https://vidsrc-embed.ru/embed/tv/{externalId}/{season}/{episode}' },
   { name: 'VidSrc SU', urlTemplate: 'https://vidsrc-embed.su/embed/tv/{externalId}/{season}/{episode}' },
-  { name: 'VidSrcMe', urlTemplate: 'https://vidsrcme.su/embed/tv/{externalId}/{season}/{episode}' },
   { name: 'MultiEmbed', urlTemplate: 'https://multiembed.mov/?video_id={externalId}&tmdb=1&s={season}&e={episode}' },
   { name: 'Vsrc', urlTemplate: 'https://vsrc.su/embed/tv/{externalId}/{season}/{episode}' },
   { name: 'Vidlink', urlTemplate: 'https://vidlink.pro/tv/{externalId}/{season}/{episode}' },
@@ -179,6 +180,8 @@ export function buildStreamUrl(
       .replace('{season}', String(Math.max(1, season)))
       .replace('{episode}', String(Math.max(1, episode)));
   }
+
+  url = url.replace('{primaryColor}', PRIMARY_COLOR.value.slice(1));
 
   // Add timestamp parameter for sync functionality
   if (timestamp !== undefined && timestamp > 0) {

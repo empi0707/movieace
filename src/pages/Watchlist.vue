@@ -234,6 +234,7 @@ import {
     WatchlistItem
 } from '../composables/useWatchlist';
 import { useToast } from '../composables/useToast';
+import { BRAND_SLUG } from '../config/brand';
 
 type FilterKey = 'all' | 'movie' | 'tv' | 'watched' | 'unwatched';
 type SortKey = 'recent' | 'title' | 'rating' | 'unwatched';
@@ -354,7 +355,7 @@ export default defineComponent({
                 const a = document.createElement('a');
                 const stamp = new Date().toISOString().slice(0, 10);
                 a.href = url;
-                a.download = `movieace-watchlist-${stamp}.json`;
+                a.download = `${BRAND_SLUG.value}-watchlist-${stamp}.json`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -865,7 +866,7 @@ function isValidItem(x: any): boolean {
             transform: translateY(-4px);
             box-shadow:
                 var(--shadow-lg),
-                0 0 0 1px rgba(255, 90, 31, 0.22);
+                0 0 0 1px rgba(var(--ember-rgb), 0.22);
 
             img { transform: scale(1.04); }
         }
@@ -930,7 +931,7 @@ function isValidItem(x: any): boolean {
         align-items: center;
         gap: 0.3rem;
         padding: 0.3rem 0.65rem;
-        background: rgba(255, 90, 31, 0.92);
+        background: rgba(var(--ember-rgb), 0.92);
         color: var(--ink-900);
         font-family: var(--font-mono);
         font-size: 0.6875rem;
@@ -938,7 +939,7 @@ function isValidItem(x: any): boolean {
         text-transform: uppercase;
         letter-spacing: var(--ls-micro);
         border-radius: var(--r-sm);
-        box-shadow: 0 4px 14px rgba(255, 90, 31, 0.35);
+        box-shadow: 0 4px 14px rgba(var(--ember-rgb), 0.35);
     }
 
     &__body {
@@ -1001,8 +1002,8 @@ function isValidItem(x: any): boolean {
         }
 
         &.is-on {
-            background: rgba(255, 90, 31, 0.14);
-            border-color: rgba(255, 90, 31, 0.35);
+            background: rgba(var(--ember-rgb), 0.14);
+            border-color: rgba(var(--ember-rgb), 0.35);
             color: var(--ember);
         }
 

@@ -46,7 +46,7 @@ export default defineComponent({
         eyebrow: { type: String, default: '' },
         description: { type: String, default: '' },
         imageUrl: { type: String, default: '' },
-        tint: { type: String, default: 'rgba(255, 90, 31, 0.35)' } // per-hub accent
+        tint: { type: String, default: 'rgba(var(--ember-rgb), 0.35)' } // per-hub accent
     },
     setup(props) {
         const themeVars = computed(() => ({

@@ -320,7 +320,7 @@ export default defineComponent({
         box-shadow:
             0 0 0 1px var(--rule-strong),
             0 30px 60px -20px rgba(0, 0, 0, 0.7),
-            0 0 90px -30px rgba(255, 90, 31, 0.35);
+            0 0 90px -30px rgba(var(--ember-rgb), 0.35);
 
         iframe {
             position: absolute;
@@ -460,7 +460,7 @@ export default defineComponent({
         &:hover:not(:disabled) {
             color: var(--ember);
             border-color: var(--ember);
-            background: rgba(255, 90, 31, 0.08);
+            background: rgba(var(--ember-rgb), 0.08);
         }
 
         &:disabled {
@@ -520,7 +520,7 @@ export default defineComponent({
 
         &.is-active {
             .trailer-dialog__chip-thumb {
-                box-shadow: 0 0 0 2px var(--ember), 0 14px 36px -10px rgba(255, 90, 31, 0.35);
+                box-shadow: 0 0 0 2px var(--ember), 0 14px 36px -10px rgba(var(--ember-rgb), 0.35);
             }
             img { opacity: 1; }
             .trailer-dialog__chip-name { color: var(--ember); }
@@ -605,7 +605,7 @@ export default defineComponent({
         width: 56px;
         height: 56px;
         border-radius: 50%;
-        background: rgba(255, 90, 31, 0.18);
+        background: rgba(var(--ember-rgb), 0.18);
         animation: trailer-pulse 1.6s ease-out infinite;
     }
 

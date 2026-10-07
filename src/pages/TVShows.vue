@@ -147,6 +147,7 @@ import { useTvShows, TVShowType } from '../composables/useTvShows';
 import useAxios from '../composables/useAxios';
 import { addSearchTerm } from '../composables/useHistory';
 import { primeGenres, getGenres, Genre } from '../composables/useGenreLookup';
+import { BRAND } from '../config/brand';
 
 interface TvShowResponse {
     page: number;
@@ -414,7 +415,7 @@ export default defineComponent({
         });
 
         onMounted(async () => {
-            document.title = 'Discover TV Shows — Movieace';
+            document.title = `Discover TV Shows — ${BRAND.value}`;
             primeGenres();
             hydrateFromRoute();
 
@@ -610,13 +611,13 @@ export default defineComponent({
         text-transform: uppercase;
         letter-spacing: 0.1em;
         color: var(--ember);
-        background: rgba(255, 90, 31, 0.1);
-        border: 1px solid rgba(255, 90, 31, 0.3);
+        background: rgba(var(--ember-rgb), 0.1);
+        border: 1px solid rgba(var(--ember-rgb), 0.3);
         border-radius: var(--r-pill);
         transition: background-color var(--dur-fast) var(--ease-out);
 
         &:hover, &:focus-visible {
-            background: rgba(255, 90, 31, 0.2);
+            background: rgba(var(--ember-rgb), 0.2);
         }
     }
 
@@ -724,7 +725,7 @@ export default defineComponent({
         &:hover:not(:disabled), &:focus-visible:not(:disabled) {
             color: var(--ember);
             border-color: var(--ember);
-            background: rgba(255, 90, 31, 0.08);
+            background: rgba(var(--ember-rgb), 0.08);
         }
 
         &:disabled {

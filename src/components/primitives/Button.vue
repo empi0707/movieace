@@ -131,11 +131,11 @@ export default defineComponent({
     &--primary {
         background: var(--ember);
         color: var(--ink-900);
-        box-shadow: 0 8px 24px rgba(255, 90, 31, 0.28);
+        box-shadow: 0 8px 24px rgba(var(--ember-rgb), 0.28);
 
         &:not(:disabled):hover {
             background: var(--ember-600);
-            box-shadow: 0 12px 32px rgba(255, 90, 31, 0.38);
+            box-shadow: 0 12px 32px rgba(var(--ember-rgb), 0.38);
             transform: translateY(-1px);
         }
     }

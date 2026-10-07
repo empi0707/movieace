@@ -185,11 +185,20 @@ VITE_API_BASE_URL=https://api.themoviedb.org/
 VITE_API_VERSION=3
 VITE_IMAGE_BASE_URL=https://image.tmdb.org/t/p/
 
+VITE_BRAND=Brand
+VITE_PRIMARY_COLOR="#ff5902"
+VITE_SITE_URL=https://cataz.cc
+SITEMAP_TMDB_PAGES=10
+
 VITE_API_KEY=<your TMDB v3 API key>
 VITE_API_ACCESS_TOKEN=<your TMDB v4 read access token>
 ```
 
 Both keys are issued from the same TMDB account: the v3 key is used for most legacy endpoints, the v4 read token for newer ones. Movieace uses both depending on the call.
+
+`yarn build` writes `sitemap.xml` and `robots.txt` to `dist/`. Change
+`VITE_SITE_URL` for each production domain; `SITEMAP_TMDB_PAGES` controls how
+many TMDB result pages per content type are included (1–100).
 
 ## Project structure
 
