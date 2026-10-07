@@ -186,8 +186,6 @@ export default defineComponent({
         width: 42px;
         height: 42px;
         object-fit: contain;
-        border-radius: var(--r-sm);
-        box-shadow: 0 6px 20px rgba(var(--ember-rgb), 0.25);
     }
 
     &__wordmark {
