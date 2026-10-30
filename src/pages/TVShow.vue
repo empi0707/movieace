@@ -116,6 +116,7 @@ import { useTvShows, TVShowDetails, TVShowType } from '../composables/useTvShows
 import { Cast, Crew } from '../composables/useMovies';
 import { fetchTrailerVideos, type TrailerVideo } from '../composables/useTrailer';
 import { getLastWatchedMetaData } from '../composables/useStream';
+import { addViewedItem } from '../composables/useHistory';
 import useAxios from '../composables/useAxios';
 import { primeGenres } from '../composables/useGenreLookup';
 import { BRAND } from '../config/brand';

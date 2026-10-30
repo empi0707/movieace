@@ -25,7 +25,7 @@ const defaultStreamData: StreamData = {
 export const streamData = useStorage<StreamData>('streamData', defaultStreamData);
 
 export const movieServers = ref<Server[]>([
-  { name: 'VidSrcMe', urlTemplate: 'https://vidsrcme.su/embed/movie/{tmdbId}' },
+  { name: 'VidSrcMe', urlTemplate: 'https://vidsrc.sh/embed/movie/{tmdbId}' },
   { name: 'Vidy', urlTemplate: 'https://www.vidy.st/movie/{tmdbId}?color=ff5a1f&autoplay=true' },
   { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/movie/{tmdbId}?color=#4eb5ff' },
   { name: 'Cinemaos', urlTemplate: 'https://cinemaos.tech/player/{tmdbId}' },
@@ -42,7 +42,7 @@ export const movieServers = ref<Server[]>([
 ]);
 
 export const tvServers = ref<Server[]>([
-  { name: 'VidSrcMe', urlTemplate: 'https://vidsrcme.su/embed/tv/{externalId}/{season}/{episode}' },
+  { name: 'VidSrcMe', urlTemplate: 'https://vidsrc.sh/embed/tv/{externalId}/{season}/{episode}' },
   { name: 'Vidy', urlTemplate: 'https://www.vidy.st/tv/{externalId}/{season}/{episode}?color=ff5a1f&autoplay=true&nextEpisode=true&episodeSelector=true&autoplayNextEpisode=true' },
   { name: 'VidEasy', urlTemplate: 'https://player.videasy.net/tv/{externalId}/{season}/{episode}?color=#4eb5ff&nextEpisode=true&autoplayNextEpisode=true&episodeSelector=true' },
   { name: 'Cinemaos', urlTemplate: 'https://cinemaos.tech/player/{externalId}/{season}/{episode}' },
@@ -187,7 +187,7 @@ export function buildStreamUrl(
   if (timestamp !== undefined && timestamp > 0) {
     const timestampSeconds = Math.floor(timestamp);
     const serverName = server.name.toLowerCase();
-    
+
     // Different servers use different timestamp parameters
     if (serverName === 'vidy') {
       // Vidy uses 'progress' parameter
